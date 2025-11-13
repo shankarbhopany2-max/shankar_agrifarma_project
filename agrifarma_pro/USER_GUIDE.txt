@@ -1,0 +1,100 @@
+🌾 AgriFarma - User Guide for New Users
+======================================
+
+Welcome to AgriFarma — a smart agriculture web platform designed to connect farmers, experts, and administrators.
+
+This guide will help you understand how to use the website step by step.
+
+------------------------------------------------------------
+
+1️⃣ REGISTRATION (Create a New Account)
+--------------------------------------
+- Go to the Registration page (click "Register" or visit /register).
+- Enter your full name, email address,phone no , cnicn and password.
+- Click on the “Create Account” button.
+- After registration, your role will be set as a *Farmer* by default.
+- You can now log in to your account using your registered email and password.
+
+------------------------------------------------------------
+
+2️⃣ LOGIN (Access Your Account)
+-------------------------------
+- Visit the Login page (/login).
+- Enter your email and password.
+- Click on the “Login” button.
+- Once logged in:
+  - Farmers will be redirected to their *Dashboard*.
+  - Experts will be redirected to their *Expert Dashboard*.
+  - Admins will be redirected to the *Admin Dashboard*.
+
+------------------------------------------------------------
+
+3️⃣ FARMER DASHBOARD FEATURES
+------------------------------
+After logging in as a Farmer, you can:
+- ✍ Create new blogs to share your experiences or farming tips.
+- 💬 Ask questions in the Forum to get help from experts or other farmers.
+- 🛒 View and add agricultural products to the marketplace.
+- 🌱 Consult an Expert by sending a request describing your farming issue.
+- 📩 Receive expert replies directly in your dashboard under “Consultations”.
+
+------------------------------------------------------------
+
+4️⃣ EXPERT DASHBOARD FEATURES
+------------------------------
+If you are promoted to *Expert*, you can:
+- View all consultations assigned to you by farmers.
+- Reply directly to farmer queries.
+- Check forum questions and contribute with answers.
+- Access your dashboard via /expert/dashboard.
+
+------------------------------------------------------------
+
+5️⃣ ADMIN DASHBOARD FEATURES
+-----------------------------
+Admins have full control over the platform. They can:
+- View and manage all users, experts, and farmers.
+- Promote a Farmer to Expert or demote back to Farmer.
+- Delete blogs, products, forum posts, or replies.
+- Monitor consultation activity.
+- Access via /admin/dashboard.
+
+------------------------------------------------------------
+
+6️⃣ MARKETPLACE (Products)
+---------------------------
+- Farmers can list their agricultural products for sale.
+- Each product includes a name, description, price, and image.
+- All users can browse products in the *Products* section.
+
+------------------------------------------------------------
+
+7️⃣ FORUM (Community Discussions)
+---------------------------------
+- Farmers can create new discussion threads in the Forum.
+- Other farmers and experts can reply to questions.
+- The Forum acts like a community help platform similar to StackOverflow.
+
+------------------------------------------------------------
+
+8️⃣ CONSULTATION SYSTEM
+------------------------
+- Farmers can send consultation requests to specific experts.
+- Experts can view these requests and send replies.
+- Farmers will see expert responses in their dashboard under “Consultations”.
+
+------------------------------------------------------------
+
+9️⃣ LOGOUT
+-----------
+- Click on the "Logout" button in the navigation bar to securely log out from your account.
+
+------------------------------------------------------------
+
+10️⃣ SUPPORT
+-------------
+If you face any problem using the system:
+- Contact your administrator or support team.
+- Or email: shankarlal0892.@gmail.com (default admin).
+
+------------------------------------------------------------

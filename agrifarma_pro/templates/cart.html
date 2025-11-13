@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">Shopping Cart</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Cart Items ({{ cart_items|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if cart_items %}
+                    {% for item in cart_items %}
+                    <div class="row align-items-center mb-4 pb-4 border-bottom cart-item" data-id="{{ item.product.id }}">
+                        <div class="col-md-2">
+                            {% if item.product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ item.product.image) }}" 
+                                 class="img-fluid rounded" 
+                                 alt="{{ item.product.name }}"
+                                 style="height: 80px; object-fit: cover;">
+                            {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="mb-1">{{ item.product.name }}</h6>
+                            <small class="text-muted">Category: {{ item.product.category }}</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h6 class="text-success mb-0">PKR {{ "%.2f"|format(item.product.price) }}</h6>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group input-group-sm">
+                                <button class="btn btn-outline-secondary quantity-minus" type="button">-</button>
+                                <input type="text" class="form-control text-center quantity-input" value="{{ item.quantity }}" readonly>
+                                <button class="btn btn-outline-secondary quantity-plus" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong class="text-success">PKR {{ "%.2f"|format(item.product.price * item.quantity) }}</strong>
+                            <button class="btn btn-outline-danger btn-sm remove-item mt-1">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">Your cart is empty</h4>
+                        <p class="text-muted">Start shopping to add items to your cart</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-success">Continue Shopping</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if cart_items %}
+            <!-- Continue Shopping -->
+            <div class="mt-3">
+                <a href="{{ url_for('products') }}" class="btn btn-outline-success">
+                    <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if cart_items %}
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal ({{ cart_items|length }} items)</span>
+                        <span>PKR {{ "%.2f"|format(total) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="text-success">PKR 200.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span>PKR {{ "%.2f"|format(total * 0.05) }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong class="text-success">PKR {{ "%.2f"|format(total + 200 + (total * 0.05)) }}</strong>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <div class="d-grid">
+                        <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                        </a>
+                    </div>
+
+                    <!-- Security Info -->
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-lock me-1"></i>Secure checkout • 
+                            <i class="fas fa-shield-alt ms-2 me-1"></i>SSL encrypted
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if cart_items %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quantity controls
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quantity-minus')) {
+            const itemElement = e.target.closest('.cart-item');
+            const productId = parseInt(itemElement.dataset.id);
+            updateQuantity(productId, -1);
+        } else if (e.target.classList.contains('quantity-plus')) {
+            const itemElement = e.target.closest('.cart-item');
+            const productId = parseInt(itemElement.dataset.id);
+            updateQuantity(productId, 1);
+        } else if (e.target.classList.contains('remove-item')) {
+            const itemElement = e.target.closest('.cart-item');
+            const productId = parseInt(itemElement.dataset.id);
+            removeItem(productId);
+        }
+    });
+
+    function updateQuantity(productId, change) {
+        fetch(`/cart/update/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quantity: change
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                showAlert('Error updating quantity', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error updating quantity', 'danger');
+        });
+    }
+
+    function removeItem(productId) {
+        window.location.href = `/cart/remove/${productId}`;
+    }
+
+    function showAlert(message, type) {
+        // Remove existing alerts
+        const existingAlerts = document.querySelectorAll('.alert-dismissible');
+        existingAlerts.forEach(alert => alert.remove());
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 3000);
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,638 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.forum-hero {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.forum-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    animation: floatBackground 60s linear infinite;
+}
+
+.forum-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.discussion-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-left: 4px solid #FF6B6B;
+    position: relative;
+    overflow: hidden;
+}
+
+.discussion-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.discussion-card:hover::before {
+    left: 100%;
+}
+
+.discussion-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(255, 107, 107, 0.15);
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.discussion-badge {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.filter-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border-left: 4px solid #FF6B6B;
+}
+
+.filter-input {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.filter-input:focus {
+    border-color: #FF6B6B;
+    background: white;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.filter-select {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.filter-select:focus {
+    border-color: #FF6B6B;
+    background: white;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.action-btn {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #6c757d;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-success:hover {
+    background: linear-gradient(45deg, #48BB78, #38A169);
+    border-color: transparent;
+    color: white;
+}
+
+.btn-outline-secondary:hover {
+    background: linear-gradient(45deg, #6c757d, #495057);
+    border-color: transparent;
+    color: white;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-color: transparent;
+    color: white;
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-header {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    padding: 1.5rem;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+     background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.topic-item {
+    border: none;
+    border-radius: 15px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.topic-item:hover {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    transform: translateX(10px);
+}
+
+.topic-item:hover .badge {
+    background: white !important;
+    color: #FF6B6B !important;
+}
+
+.guideline-item {
+    border: none;
+    padding: 0.5rem 0;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.guideline-item:hover {
+    color: #FF6B6B;
+    transform: translateX(5px);
+}
+
+.create-btn {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.create-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.create-btn:hover::before {
+    left: 100%;
+}
+
+.create-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
+}
+
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #FF6B6B;
+    margin-bottom: 1rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.pagination .page-link {
+    border: none;
+    border-radius: 15px;
+    margin: 0 5px;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    border-color: transparent;
+    color: white;
+}
+
+.section-title {
+    position: relative;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    border-radius: 2px;
+}
+
+.fade-in {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stagger-animation > * {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+</style>
+
+<div class="forum-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Community post</h1>
+                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+                    Connect, share, and learn with farmers and agricultural experts worldwide
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="forum-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="row fade-in">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="fw-bold section-title">Community Discussions</h2>
+                        <p class="text-muted mb-0">Join the conversation with fellow farmers</p>
+                    </div>
+                    {% if 'user' in session %}
+                    <a href="{{ url_for('new_forum_post') }}" class="create-btn">
+                        <i class="fas fa-plus me-2"></i>New post
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Search and Filter -->
+                <div class="filter-card fade-in">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control filter-input" placeholder="Search discussions...">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select filter-select">
+                                <option>All Categories</option>
+                                <option>Crop Diseases</option>
+                                <option>Irrigation</option>
+                                <option>Soil Health</option>
+                                <option>Market Prices</option>
+                                <option>Success Stories</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forum Posts -->
+                <div class="stagger-animation">
+                    {% for post in posts %}
+                    <div class="discussion-card">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 me-4">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-2">
+                                    <a href="#" class="text-decoration-none text-dark fw-bold">{{ post.title }}</a>
+                                </h5>
+                                <p class="card-text text-muted mb-3">{{ post.content[:200] }}...</p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>User • 
+                                        <i class="fas fa-clock me-1 ms-2"></i>{{ post.created_date.strftime('%b %d, %Y') }}
+                                    </small>
+                                    <div>
+                                        {% if post.tags %}
+                                        {% for tag in post.tags.split(',') %}
+                                        <span class="badge me-1" style="background: #f8f9fa; color: #6c757d; padding: 6px 12px; border-radius: 12px;">{{ tag.strip() }}</span>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <span class="discussion-badge">{{ post.post_type|title }}</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn action-btn btn-outline-success me-2">
+                                        <i class="fas fa-thumbs-up me-1"></i>12
+                                    </button>
+                                    <button class="btn action-btn btn-outline-secondary me-2">
+                                        <i class="fas fa-comment me-1"></i>5 Comments
+                                    </button>
+                                    <button class="btn action-btn btn-outline-primary">
+                                        <i class="fas fa-share me-1"></i>Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4 class="text-muted mb-3">No Discussions Yet</h4>
+                        <p class="text-muted mb-4">Be the first to start a discussion in our community!</p>
+                        {% if 'user' in session %}
+                        <a href="{{ url_for('new_forum_post') }}" class="create-btn">
+                            <i class="fas fa-plus me-2"></i>Start First Discussion
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('login') }}" class="create-btn">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Start Discussion
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Forum pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Forum Statistics -->
+                <div class="sidebar-card fade-in">
+                    <div class="sidebar-header">
+                        <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Forum Statistics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 mb-4">
+                                <div class="stats-number">156</div>
+                                <small class="text-muted">Discussions</small>
+                            </div>
+                            <div class="col-6 mb-4">
+                                <div class="stats-number">892</div>
+                                <small class="text-muted">Replies</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="stats-number">324</div>
+                                <small class="text-muted">Members</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="stats-number">45</div>
+                                <small class="text-muted">Online</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Topics -->
+                <div class="sidebar-card fade-in">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="fas fa-fire me-2"></i>Popular Topics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action topic-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small>Best irrigation practices for wheat</small>
+                                    <span class="badge" style="background: linear-gradient(45deg, #48BB78, #38A169); color: white; border-radius: 10px;">42</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action topic-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small>Organic pest control methods</small>
+                                    <span class="badge" style="background: linear-gradient(45deg, #48BB78, #38A169); color: white; border-radius: 10px;">35</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action topic-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small>Market prices update this week</small>
+                                    <span class="badge" style="background: linear-gradient(45deg, #48BB78, #38A169); color: white; border-radius: 10px;">28</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action topic-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <small>Success story: Tomato farming</small>
+                                    <span class="badge" style="background: linear-gradient(45deg, #48BB78, #38A169); color: white; border-radius: 10px;">24</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forum Rules -->
+                <div class="sidebar-card fade-in">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Community Guidelines</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled small">
+                            <li class="guideline-item">
+                                <i class="fas fa-check text-success me-2"></i>Be respectful to all members
+                            </li>
+                            <li class="guideline-item">
+                                <i class="fas fa-check text-success me-2"></i>Share knowledge and experiences
+                            </li>
+                            <li class="guideline-item">
+                                <i class="fas fa-check text-success me-2"></i>No spam or self-promotion
+                            </li>
+                            <li class="guideline-item">
+                                <i class="fas fa-check text-success me-2"></i>Keep discussions relevant
+                            </li>
+                            <li class="guideline-item">
+                                <i class="fas fa-check text-success me-2"></i>Help fellow farmers
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add intersection observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all cards for animation
+    document.querySelectorAll('.discussion-card, .sidebar-card, .filter-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease-out';
+        observer.observe(card);
+    });
+
+    // Like button functionality
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        if (btn.textContent.includes('fa-thumbs-up')) {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const count = parseInt(this.textContent.match(/\d+/)[0]);
+                
+                if (this.classList.contains('liked')) {
+                    this.classList.remove('liked');
+                    this.innerHTML = `<i class="fas fa-thumbs-up me-1"></i>${count - 1}`;
+                    this.style.background = 'transparent';
+                    this.style.color = '#6c757d';
+                } else {
+                    this.classList.add('liked');
+                    this.innerHTML = `<i class="fas fa-thumbs-up me-1"></i>${count + 1}`;
+                    this.style.background = 'linear-gradient(45deg, #48BB78, #38A169)';
+                    this.style.color = 'white';
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        }
+    });
+
+    // Search and filter functionality
+    const searchInput = document.querySelector('.filter-input');
+    const categorySelect = document.querySelector('.filter-select');
+    
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const category = categorySelect.value;
+        
+        // Here you would typically make an API call or filter results
+        console.log('Searching for:', searchTerm, 'in category:', category);
+        
+        // Add loading animation to discussion cards
+        document.querySelectorAll('.discussion-card').forEach(card => {
+            card.style.opacity = '0.5';
+            card.style.transform = 'scale(0.95)';
+        });
+        
+        setTimeout(() => {
+            document.querySelectorAll('.discussion-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            });
+        }, 500);
+    }
+    
+    searchInput.addEventListener('input', performSearch);
+    categorySelect.addEventListener('change', performSearch);
+});
+</script>
+{% endblock %}

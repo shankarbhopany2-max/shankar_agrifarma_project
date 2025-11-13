@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .error-container {
+        min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.error-content {
+    text-align: center;
+    color: white;
+    padding: 3rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+.error-btn {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.error-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+</style>
+
+<div class="error-container">
+    <div class="error-content animate__animated animate__fadeIn">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="display-4 fw-bold">500 - Internal Server Error</h1>
+        <p class="lead mb-4">Something went wrong on our end. Please try again later.</p>
+        <a href="{{ url_for('index') }}" class="error-btn">
+            <i class="fas fa-home me-2"></i>Go Home
+        </a>
+    </div>
+</div>
+    {% endblock %}

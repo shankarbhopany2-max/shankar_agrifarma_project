@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-tie me-2"></i>Become an Agrifarma Consultant</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Application Guidelines -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>Application Guidelines</h6>
+                        <ul class="mb-0 small">
+                            <li>Provide accurate information about your expertise and experience</li>
+                            <li>Consultants are verified by our admin team before approval</li>
+                            <li>You must have proven experience in your field of expertise</li>
+                            <li>Approval process may take 2-3 business days</li>
+                        </ul>
+                    </div>
+
+                    <form method="POST">
+                        <!-- Personal Information -->
+                        <h5 class="mb-3 text-success">Personal Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" value="{{ session['user'] }}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" placeholder="Your professional email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Mobile Number *</label>
+                                <input type="tel" class="form-control" placeholder="+92 XXX XXXXXXX" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Location *</label>
+                                <input type="text" class="form-control" placeholder="City, Province" required>
+                            </div>
+                        </div>
+
+                        <!-- Expertise Area -->
+                        <h5 class="mb-3 text-success">Expertise Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Consultation Category *</label>
+                                <select name="category" class="form-select" required>
+                                    <option value="">Select your expertise area</option>
+                                    <option value="crop_science">Crop Science</option>
+                                    <option value="soil_health">Soil Health & Fertility</option>
+                                    <option value="irrigation">Irrigation & Water Management</option>
+                                    <option value="pest_management">Pest & Disease Management</option>
+                                    <option value="organic_farming">Organic Farming</option>
+                                    <option value="livestock">Livestock Management</option>
+                                    <option value="agricultural_economics">Agricultural Economics</option>
+                                    <option value="sustainable_farming">Sustainable Farming</option>
+                                    <option value="greenhouse">Greenhouse Management</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Years of Experience *</label>
+                                <select class="form-select" required>
+                                    <option value="">Select experience</option>
+                                    <option value="1-3">1-3 years</option>
+                                    <option value="3-5">3-5 years</option>
+                                    <option value="5-10">5-10 years</option>
+                                    <option value="10+">10+ years</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Specific Expertise/Specialization *</label>
+                                <input type="text" class="form-control" 
+                                       placeholder="e.g., Wheat diseases, Drip irrigation, Organic pesticides" 
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Professional Background -->
+                        <h5 class="mb-3 text-success">Professional Background</h5>
+                        <div class="row mb-4">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Professional Summary *</label>
+                                <textarea class="form-control" rows="4" 
+                                          placeholder="Describe your professional background, education, certifications, and notable achievements..."
+                                          required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Previous Experience</label>
+                                <textarea class="form-control" rows="3" 
+                                          placeholder="List your previous roles, projects, or consulting experience..."></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Certifications & Qualifications</label>
+                                <textarea class="form-control" rows="3" 
+                                          placeholder="List relevant certifications, degrees, or training..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Consultation Details -->
+                        <h5 class="mb-3 text-success">Consultation Details</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Consultation Fee (PKR per hour)</label>
+                                <input type="number" class="form-control" placeholder="e.g., 2000" min="0">
+                                <small class="text-muted">Leave empty for free/voluntary consultations</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Availability</label>
+                                <select class="form-select">
+                                    <option value="">Select availability</option>
+                                    <option value="weekdays">Weekdays Only</option>
+                                    <option value="weekends">Weekends Only</option>
+                                    <option value="both">Both Weekdays & Weekends</option>
+                                    <option value="flexible">Flexible</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Preferred Consultation Methods</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="phoneConsult">
+                                    <label class="form-check-label" for="phoneConsult">
+                                        Phone Call
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="videoConsult">
+                                    <label class="form-check-label" for="videoConsult">
+                                        Video Call
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="inPerson">
+                                    <label class="form-check-label" for="inPerson">
+                                        In-Person Visit
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="message">
+                                    <label class="form-check-label" for="message">
+                                        Messaging
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documents Upload -->
+                        <h5 class="mb-3 text-success">Supporting Documents (Optional)</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Resume/CV</label>
+                                <input type="file" class="form-control" accept=".pdf,.doc,.docx">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Certifications</label>
+                                <input type="file" class="form-control" accept=".pdf,.jpg,.png" multiple>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#">Consultant Terms & Conditions</a> and confirm that all information provided is accurate.
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            After submission, our team will review your application and contact you within 2-3 business days.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

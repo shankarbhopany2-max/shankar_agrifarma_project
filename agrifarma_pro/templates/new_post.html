@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        {% if request.args.get('type') == 'knowledge' %}
+                        Share Knowledge Article
+                        {% else %}
+                        Start New Discussion
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Post Type Selection -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label">Post Type *</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check card p-3">
+                                            <input class="form-check-input" type="radio" name="post_type" 
+                                                   id="forum" value="forum" 
+                                                   {% if request.args.get('type') != 'knowledge' %}checked{% endif %}>
+                                            <label class="form-check-label" for="forum">
+                                                <h6 class="mb-1">Discussion Post</h6>
+                                                <small class="text-muted">Start a discussion or ask a question to the community</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check card p-3">
+                                            <input class="form-check-input" type="radio" name="post_type" 
+                                                   id="knowledge" value="knowledge"
+                                                   {% if request.args.get('type') == 'knowledge' %}checked{% endif %}>
+                                            <label class="form-check-label" for="knowledge">
+                                                <h6 class="mb-1">Knowledge Article</h6>
+                                                <small class="text-muted">Share educational content or farming techniques</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Title -->
+                        <div class="mb-3">
+                            <label class="form-label">Title *</label>
+                            <input type="text" name="title" class="form-control form-control-lg" 
+                                   placeholder="Enter a clear and descriptive title" required>
+                        </div>
+
+                        <!-- Category Selection -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Category *</label>
+                                <select class="form-select" required>
+                                    <option value="">Select category</option>
+                                    <option value="crop_management">Crop Management</option>
+                                    <option value="irrigation">Irrigation & Water</option>
+                                    <option value="soil_health">Soil Health</option>
+                                    <option value="pest_disease">Pest & Disease Control</option>
+                                    <option value="market_prices">Market Prices</option>
+                                    <option value="success_stories">Success Stories</option>
+                                    <option value="new_technology">New Technology</option>
+                                    <option value="organic_farming">Organic Farming</option>
+                                    <option value="livestock">Livestock</option>
+                                    <option value="general">General Discussion</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tags</label>
+                                <input type="text" name="tags" class="form-control" 
+                                       placeholder="e.g., wheat, irrigation, organic (separate with commas)">
+                            </div>
+                        </div>
+
+                        <!-- Content Editor -->
+                        <div class="mb-4">
+                            <label class="form-label">Content *</label>
+                            <textarea name="content" class="form-control" rows="12" 
+                                      placeholder="Write your post content here... You can include details, questions, or share your knowledge and experiences."
+                                      required></textarea>
+                            <div class="form-text">
+                                <strong>Tips for great posts:</strong>
+                                <ul class="mb-0 small">
+                                    <li>Be clear and specific in your description</li>
+                                    <li>Include relevant details about your situation</li>
+                                    <li>Ask specific questions to get better answers</li>
+                                    <li>Share your own experiences and solutions</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- File Attachments -->
+                        <div class="mb-4">
+                            <label class="form-label">Attachments (Optional)</label>
+                            <div class="border rounded p-3">
+                                <div class="mb-3">
+                                    <label class="form-label small">Images</label>
+                                    <input type="file" class="form-control" multiple accept="image/*">
+                                    <small class="text-muted">Upload images related to your post (max 5 images, 2MB each)</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small">Documents</label>
+                                    <input type="file" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx">
+                                    <small class="text-muted">Upload PDF, Word, or PowerPoint files (max 10MB)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Settings -->
+                        <div class="mb-4">
+                            <label class="form-label">Post Settings</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="notifications">
+                                        <label class="form-check-label" for="notifications">
+                                            Receive email notifications for replies
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="anonymous">
+                                        <label class="form-check-label" for="anonymous">
+                                            Post anonymously
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('forum') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                            <div>
+                                <button type="button" class="btn btn-outline-success me-2">
+                                    <i class="fas fa-eye me-2"></i>Preview
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-paper-plane me-2"></i>Publish Post
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Posting Guidelines -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Posting Guidelines</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-success">Do:</h6>
+                            <ul class="small">
+                                <li>Be respectful and professional</li>
+                                <li>Share accurate information</li>
+                                <li>Use clear and descriptive titles</li>
+                                <li>Provide context and details</li>
+                                <li>Cite sources when possible</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-danger">Don't:</h6>
+                            <ul class="small">
+                                <li>Post spam or advertisements</li>
+                                <li>Share misleading information</li>
+                                <li>Use offensive language</li>
+                                <li>Post duplicate content</li>
+                                <li>Share personal contact information</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-check .card {
+    transition: all 0.3s ease;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+}
+
+.form-check .card:hover {
+    border-color: #28a745;
+}
+
+.form-check-input:checked ~ .card {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click functionality to radio card
+    const radioCards = document.querySelectorAll('.form-check .card');
+    radioCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const radioInput = this.querySelector('.form-check-input');
+            radioInput.checked = true;
+            
+            // Remove active class from all cards
+            radioCards.forEach(c => c.classList.remove('border-success', 'bg-light'));
+            
+            // Add active class to clicked card
+            this.classList.add('border-success', 'bg-light');
+        });
+    });
+});
+</script>
+{% endblock %}

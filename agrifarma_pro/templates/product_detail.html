@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.products-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.filter-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+}
+
+.product-grid {
+    padding: 3rem 0;
+}
+
+.product-card-enhanced {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.product-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.product-card-enhanced:hover::before {
+    transform: scaleX(1);
+}
+
+.product-card-enhanced:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+    height: 250px;
+    background: linear-gradient(45deg, #f5f7fa, #c3cfe2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    transition: all 0.4s ease;
+}
+
+.product-card-enhanced:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.product-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.price-tag {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.quick-view {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.product-card-enhanced:hover .quick-view {
+    bottom: 20px;
+    opacity: 1;
+}
+
+.quick-view:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+</style>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            {% if product.image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+                 class="img-fluid rounded" 
+                 alt="{{ product.name }}">
+            {% else %}
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                 style="height: 400px;">
+                <i class="fas fa-image fa-4x text-muted"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Products</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ product.category }}</a></li>
+                    <li class="breadcrumb-item active">{{ product.name }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="fw-bold">{{ product.name }}</h1>
+            
+            {% if product.featured %}
+            <span class="badge bg-warning mb-3">
+                <i class="fas fa-star me-1"></i>Featured
+            </span>
+            {% endif %}
+            
+            <h2 class="text-success mb-4">PKR {{ product.price }}</h2>
+            
+            <div class="mb-4">
+                <h5>Description</h5>
+                <p class="text-muted">{{ product.description }}</p>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-6">
+                    <strong>Category:</strong>
+                    <p class="text-muted">{{ product.category }}</p>
+                </div>
+                <div class="col-6">
+                    <strong>Stock:</strong>
+                    <p class="text-muted">{{ product.stock_quantity }} available</p>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}" 
+                   class="btn btn-success btn-lg me-md-2">
+                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                </a>
+                <button class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-heart me-2"></i>Save
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>Secure payment
+                    <i class="fas fa-truck ms-3 me-1"></i>Free shipping
+                    <i class="fas fa-undo ms-3 me-1"></i>Easy returns
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

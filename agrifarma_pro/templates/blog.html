@@ -1,0 +1,637 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.blog-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    animation: floatBackground 60s linear infinite;
+}
+
+@keyframes floatBackground {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-100px, -100px) rotate(360deg); }
+}
+
+.blog-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.category-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.category-card:hover::before {
+    left: 100%;
+}
+
+.category-card:hover {
+    transform: translateY(-15px) scale(1.05);
+    border-color: #667eea;
+    box-shadow: 0 25px 50px rgba(102, 126, 234, 0.2);
+}
+
+.category-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 2.2rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+.category-icon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 10px 10px;
+    animation: rotate 20s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-card:hover .category-icon::before {
+    opacity: 1;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.article-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    border-top: 4px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.article-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.article-card:hover::before {
+    transform: scaleX(1);
+}
+
+.article-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.featured-badge {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #2d3748;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+.blog-search-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border-left: 4px solid #667eea;
+}
+
+.search-input {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.search-input:focus {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.search-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    padding: 12px 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.contributor-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.contributor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.contributor-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.resource-item {
+    border: none;
+    border-radius: 15px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.resource-item:hover {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    transform: translateX(10px);
+}
+
+.resource-item:hover .text-danger,
+.resource-item:hover .text-success,
+.resource-item:hover .text-primary {
+    color: white !important;
+}
+
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.create-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.create-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.create-btn:hover::before {
+    left: 100%;
+}
+
+.create-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+.section-title {
+    position: relative;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.fade-in {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stagger-animation > * {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+</style>
+
+<div class="blog-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Blog</h1>
+                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+                    Discover expert insights, farming techniques, and the latest trends in agriculture
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="blog-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="row fade-in">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="fw-bold section-title">Knowledge Hub</h2>
+                        <p class="text-muted mb-0">Educational resources, guides, and farming techniques</p>
+                    </div>
+                    {% if 'user' in session %}
+                    <a href="{{ url_for('new_forum_post') }}?type=blog" class="create-btn">
+                        <i class="fas fa-plus me-2"></i>Share Blog Post
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h4 class="mb-4 section-title">Browse by Category</h4>
+                <div class="row g-4 stagger-animation">
+                    <div class="col-md-3">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h5>Crop Management</h5>
+                            <p class="text-muted small mb-3">Best practices for various crops</p>
+                            <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 15px; border-radius: 15px;">45 Articles</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <h5>Irrigation</h5>
+                            <p class="text-muted small mb-3">Water management techniques</p>
+                            <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 15px; border-radius: 15px;">32 Articles</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <h5>Pest Control</h5>
+                            <p class="text-muted small mb-3">Organic and chemical solutions</p>
+                            <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 15px; border-radius: 15px;">28 Articles</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="category-card">
+                            <div class="category-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5>Market Insights</h5>
+                            <p class="text-muted small mb-3">Price trends and analysis</p>
+                            <span class="badge" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 15px; border-radius: 15px;">19 Articles</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Articles -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h4 class="mb-4 section-title">Featured Articles</h4>
+                <div class="row g-4 stagger-animation">
+                    {% for post in posts %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="article-card">
+                            <span class="featured-badge">Featured</span>
+                            <h5 class="card-title fw-bold mb-3">{{ post.title }}</h5>
+                            <p class="card-text text-muted mb-4">{{ post.content[:150] }}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ post.created_date.strftime('%b %d, %Y') }}
+                                </small>
+                                <a href="#" class="btn btn-sm" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 15px; padding: 8px 20px;">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h4 class="text-muted mb-3">No Blog Articles Yet</h4>
+                            <p class="text-muted mb-4">Share your farming knowledge and experiences with the community!</p>
+                            {% if 'user' in session %}
+                            <a href="{{ url_for('new_forum_post') }}?type=blog" class="create-btn">
+                                <i class="fas fa-pen-fancy me-2"></i>Write First Article
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-md-8">
+                <h4 class="mb-4 section-title">Latest Articles</h4>
+                <div class="blog-search-card mb-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control search-input" placeholder="Search blog articles...">
+                        <button class="btn search-btn" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stagger-animation">
+                    {% for post in posts %}
+                    <div class="article-card mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="fw-bold mb-0">{{ post.title }}</h5>
+                            <small class="text-muted">{{ post.created_date.strftime('%b %d') }}</small>
+                        </div>
+                        <p class="text-muted mb-3">{{ post.content[:100] }}...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted me-3">
+                                    <i class="fas fa-eye me-1"></i> 245 views
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-thumbs-up me-1"></i> 34 likes
+                                </small>
+                            </div>
+                            <span class="badge" style="background: linear-gradient(45deg, #48BB78, #38A169); color: white; padding: 6px 12px; border-radius: 12px;">
+                                {{ post.post_type|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Top Contributors -->
+                <div class="contributor-card mb-4">
+                    <div class="card-header" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 20px 20px 0 0; padding: 1.5rem;">
+                        <h6 class="mb-0"><i class="fas fa-trophy me-2"></i>Top Contributors</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center border-0 py-3">
+                                <div class="contributor-avatar me-3">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Ahmed Khan</h6>
+                                    <small class="text-muted">45 articles</small>
+                                </div>
+                                <span class="badge" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #2d3748; padding: 4px 10px; border-radius: 10px;">Expert</span>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center border-0 py-3">
+                                <div class="contributor-avatar me-3">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">Fatima Ali</h6>
+                                    <small class="text-muted">32 articles</small>
+                                </div>
+                                <span class="badge" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #2d3748; padding: 4px 10px; border-radius: 10px;">Expert</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div class="contributor-card">
+                    <div class="card-header bg-light" style="border-radius: 20px 20px 0 0; padding: 1.5rem;">
+                        <h6 class="mb-0"><i class="fas fa-download me-2"></i>Resources</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action resource-item border-0 py-3">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Farming Guide 2024
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action resource-item border-0 py-3">
+                                <i class="fas fa-file-excel text-success me-2"></i>
+                                Crop Planning Template
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action resource-item border-0 py-3">
+                                <i class="fas fa-file-word text-primary me-2"></i>
+                                Market Analysis Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add intersection observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all cards for animation
+    document.querySelectorAll('.category-card, .article-card, .contributor-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease-out';
+        observer.observe(card);
+    });
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    const searchBtn = document.querySelector('.search-btn');
+    
+    searchBtn.addEventListener('click', function() {
+        performSearch();
+    });
+    
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+    
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm) {
+            // Add search animation
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            setTimeout(() => {
+                searchBtn.innerHTML = '<i class="fas fa-search"></i>';
+                // Here you would typically make an API call or filter results
+                console.log('Searching for:', searchTerm);
+            }, 1000);
+        }
+    }
+});
+</script>
+{% endblock %}

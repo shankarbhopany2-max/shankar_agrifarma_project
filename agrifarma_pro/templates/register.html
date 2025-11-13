@@ -1,0 +1,482 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.auth-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-container::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: floatBackground 60s linear infinite;
+    top: -50%;
+    left: -50%;
+}
+
+@keyframes floatBackground {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-50px, -50px) rotate(360deg); }
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.auth-header {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: float 20s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-100px, -100px) rotate(360deg); }
+}
+
+.auth-body {
+    padding: 2.5rem 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.auth-input {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+    font-family: inherit;
+}
+
+.auth-input:focus {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.auth-input:hover {
+    border-color: #c3cfe2;
+    transform: translateY(-1px);
+}
+
+.form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+}
+
+.form-select:focus {
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.auth-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.auth-btn:hover::before {
+    left: 100%;
+}
+
+.auth-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.auth-btn:active {
+    transform: translateY(-1px);
+}
+
+.auth-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.auth-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #764ba2;
+    text-decoration: none;
+}
+
+.auth-link:hover::after {
+    width: 100%;
+}
+
+.social-auth {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-btn {
+    flex: 1;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: white;
+    color: #2d3748;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.social-btn:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #2d3748;
+}
+
+.file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input-container input[type="file"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.file-input-label {
+    display: block;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: 2px dashed #e9ecef;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+.file-input-label:hover {
+    border-color: #667eea;
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.password-strength {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.required-field::after {
+    content: " *";
+    color: #e53e3e;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="mb-3 floating"><i class="fas fa-user-plus me-2"></i>Join Our Community</h2>
+            <p class="mb-0">Start your agricultural journey with us</p>
+        </div>
+        
+        <div class="auth-body">
+            <form method="POST" enctype="multipart/form-data" id="registerForm">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label required-field">Username</label>
+                        <input type="text" name="username" class="auth-input" required 
+                               placeholder="Enter your username">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label required-field">Email</label>
+                        <input type="email" name="email" class="auth-input" required 
+                               placeholder="Enter your email">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required-field">Password</label>
+                    <input type="password" name="password" class="auth-input" required 
+                           placeholder="Create a strong password" id="password">
+                    <div class="password-strength">
+                        <div class="strength-bar" id="passwordStrength"></div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="tel" name="mobile" class="auth-input" 
+                               placeholder="+92 XXX XXXXXXX">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" class="auth-input" 
+                               placeholder="City, State, Country">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Profession</label>
+                        <select name="profession" class="form-select">
+                            <option value="">Select Profession</option>
+                            <option value="farmer">Farmer</option>
+                            <option value="academics">Academics</option>
+                            <option value="consultant">Consultant</option>
+                            <option value="student">Student</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Expertise Level</label>
+                        <select name="expertise" class="form-select">
+                            <option value="">Select Level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="file-input-container">
+                        <input type="file" name="profile_picture" class="form-control" accept="image/*" id="profilePicture" required>
+                        <label for="profilePicture" class="file-input-label">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>
+                            <span id="fileLabel">Choose profile picture</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="auth-btn pulse">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4">
+                <p class="mb-3">Or sign up with</p>
+                <div class="social-auth">
+                    <a href="#" class="social-btn">
+                        <i class="fab fa-google text-danger"></i> Google
+                    </a>
+                    <a href="#" class="social-btn">
+                        <i class="fab fa-facebook text-primary"></i> Facebook
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p>Already have an account? 
+                    <a href="{{ url_for('login') }}" class="auth-link">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password strength indicator
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.getElementById('passwordStrength');
+    
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+        if (password.match(/\d/)) strength += 25;
+        if (password.match(/[^a-zA-Z\d]/)) strength += 25;
+        
+        strengthBar.style.width = strength + '%';
+        
+        if (strength < 50) {
+            strengthBar.style.background = '#e53e3e';
+        } else if (strength < 75) {
+            strengthBar.style.background = '#ed8936';
+        } else {
+            strengthBar.style.background = '#38a169';
+        }
+    });
+    
+    // File input label update
+    const fileInput = document.getElementById('profilePicture');
+    const fileLabel = document.getElementById('fileLabel');
+    
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            fileLabel.textContent = this.files[0].name;
+        } else {
+            fileLabel.textContent = 'Choose profile picture';
+        }
+    });
+    
+    // Form submission animation
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', function(e) {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+        btn.disabled = true;
+    });
+});
+</script>
+{% endblock %}

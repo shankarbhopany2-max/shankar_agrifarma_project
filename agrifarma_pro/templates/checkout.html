@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">Checkout</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Order Summary -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="row align-items-center mb-3 pb-3 border-bottom">
+                        <div class="col-md-2">
+                            {% if item.product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ item.product.image) }}" 
+                                 class="img-fluid rounded" 
+                                 alt="{{ item.product.name }}">
+                            {% else %}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px;">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="mb-1">{{ item.product.name }}</h6>
+                            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h6 class="text-success mb-0">PKR {{ item.product.price }}</h6>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>PKR {{ item.total }}</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="checkoutForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="full_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Shipping Address *</label>
+                            <textarea name="shipping_address" class="form-control" rows="3" 
+                                      placeholder="Enter your complete shipping address" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City *</label>
+                                <input type="text" name="city" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Postal Code *</label>
+                                <input type="text" name="postal_code" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" name="phone" class="form-control" required>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <div class="mb-4">
+                            <label class="form-label">Payment Method *</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="cash" value="cash" checked>
+                                <label class="form-check-label" for="cash">
+                                    Cash on Delivery
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="bank" value="bank">
+                                <label class="form-check-label" for="bank">
+                                    Bank Transfer
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment" id="jazzcash" value="jazzcash">
+                                <label class="form-check-label" for="jazzcash">
+                                    JazzCash
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="placeOrderBtn">
+                                <i class="fas fa-lock me-2"></i>Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Total -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Order Total</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>PKR {{ total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="text-success">PKR 200</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span>PKR {{ (total * 0.05)|round|int }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong class="text-success">PKR {{ total + 200 + (total * 0.05)|round|int }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Instructions -->
+            <div class="card mt-3">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">Payment Instructions</h6>
+                </div>
+                <div class="card-body">
+                    <div id="paymentInstructions" class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Pay with cash when your order is delivered.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutForm = document.getElementById('checkoutForm');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const paymentInstructions = document.getElementById('paymentInstructions');
+    
+    // Payment method selection
+    const paymentMethods = document.querySelectorAll('input[name="payment"]');
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            updatePaymentInstructions(this.value);
+        });
+    });
+    
+    // Form submission
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            processOrder();
+        }
+    });
+    
+    function updatePaymentInstructions(method) {
+        const instructions = {
+            cash: 'Pay with cash when your order is delivered.',
+            bank: 'Bank transfer details will be sent to your email after order confirmation.',
+            jazzcash: 'JazzCash payment instructions will be provided via SMS.'
+        };
+        
+        paymentInstructions.innerHTML = `<i class="fas fa-info-circle me-2"></i>${instructions[method]}`;
+    }
+    
+    function validateForm() {
+        const requiredFields = checkoutForm.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        // Validate phone number
+        const phoneField = checkoutForm.querySelector('input[name="phone"]');
+        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+        if (phoneField.value && !phoneRegex.test(phoneField.value)) {
+            phoneField.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        return isValid;
+    }
+    
+    function processOrder() {
+        const originalText = placeOrderBtn.innerHTML;
+        
+        placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        placeOrderBtn.disabled = true;
+        
+        // Simulate order processing
+        setTimeout(() => {
+            showOrderConfirmation();
+        }, 2000);
+    }
+    
+    function showOrderConfirmation() {
+        // Create success modal
+        const modalHTML = `
+            <div class="modal fade" id="successModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Order Placed Successfully!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                            <h4>Thank You!</h4>
+                            <p>Your order has been placed successfully. You will receive a confirmation email shortly.</p>
+                            <p><strong>Order Total: PKR {{ total + 200 + (total * 0.05)|round|int }}</strong></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="redirectToHome()">Continue Shopping</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        const modal = new bootstrap.Modal(document.getElementById('successModal'));
+        modal.show();
+        
+        // Remove modal from DOM after hide
+        document.getElementById('successModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+    
+    // Initialize payment instructions
+    updatePaymentInstructions('cash');
+});
+
+function redirectToHome() {
+    window.location.href = "{{ url_for('index') }}";
+}
+</script>
+{% endblock %}

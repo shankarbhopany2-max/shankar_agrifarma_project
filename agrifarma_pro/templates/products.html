@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+.products-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.filter-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+}
+
+.product-grid {
+    padding: 3rem 0;
+}
+
+.product-card-enhanced {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.product-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.product-card-enhanced:hover::before {
+    transform: scaleX(1);
+}
+
+.product-card-enhanced:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+    height: 250px;
+    background: linear-gradient(45deg, #f5f7fa, #c3cfe2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    transition: all 0.4s ease;
+}
+
+.product-card-enhanced:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.product-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.price-tag {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.quick-view {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.product-card-enhanced:hover .quick-view {
+    bottom: 20px;
+    opacity: 1;
+}
+
+.quick-view:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+</style>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">Marketplace</h2>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <form method="GET">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Search products..." value="{{ search_query }}">
+                    </form>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" onchange="window.location.href='?category='+this.value">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category[0] }}" {% if selected_category == category[0] %}selected{% endif %}>
+                            {{ category[0] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ url_for('products') }}" class="btn btn-outline-secondary w-100">Reset Filters</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 product-card">
+                {% if product.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+                     class="card-img-top" 
+                     style="height: 200px; object-fit: cover;" 
+                     alt="{{ product.name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="fas fa-image fa-2x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">{{ product.description[:100] }}...</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 text-success mb-0">PKR {{ product.price }}</span>
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                           class="btn btn-success btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No products found</h4>
+            <p class="text-muted">Try adjusting your search criteria</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.querySelector('input[name="search"]');
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            if (this.value.length >= 3 || this.value.length === 0) {
+                this.closest('form').submit();
+            }
+        }, 500);
+    });
+    
+    // Add to cart buttons (if any on this page)
+    document.querySelectorAll('.btn-success').forEach(btn => {
+        if (btn.textContent.includes('Add to Cart')) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productCard = this.closest('.card');
+                const productName = productCard.querySelector('.card-title').textContent;
+                
+                // Animation effect
+                this.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-primary');
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Add to Cart';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-success');
+                }, 2000);
+                
+                showAlert(`${productName} added to cart!`, 'success');
+            });
+        }
+    });
+    
+    // Filter functionality
+    const categorySelect = document.querySelector('select');
+    categorySelect.addEventListener('change', function() {
+        if (this.value) {
+            window.location.href = `?category=${this.value}`;
+        }
+    });
+    
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+});
+</script>
+{% endblock %}
